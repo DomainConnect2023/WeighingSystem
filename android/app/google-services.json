@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "464878516050",
+    "project_id": "weighing-system",
+    "storage_bucket": "weighing-system.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:464878516050:android:5ad79eccee3537aa80ac8b",
+        "android_client_info": {
+          "package_name": "com.weighingapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFpu9Xsqw6qZvChGjz0UbT4rJE62N9Ajo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
