@@ -10,84 +10,84 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import RNFetchBlob from "rn-fetch-blob";
 
 const Notification = ({ navigation }: any) => {
-    // const [dataProcess, setDataProcess] = useState(false);
-    // const [messages, setMessages] = useState<Message[]>([]);
+    const [dataProcess, setDataProcess] = useState(false);
+    const [messages, setMessages] = useState<Message[]>([]);
 
-    // type Message = {
-    //     id: string;
-    //     userName: string;
-    //     time: string;
-    //     frequency: string;
-    //     ticket: string;
-    //     oldWeight: string;
-    //     newWeight: string;
-    // }
+    type Message = {
+        id: string;
+        userName: string;
+        time: string;
+        frequency: string;
+        ticket: string;
+        oldWeight: string;
+        newWeight: string;
+    }
 
-    // useEffect(() => {
-    //     checktoken();
-    //     fetchData();
-    // }, []);
+    useEffect(() => {
+        checktoken();
+        fetchData();
+    }, []);
 
-    // const checktoken = async () => {
-    //     AsyncStorage.getItem('fcmtoken').then((value) => {
-    //         console.log('Token:' + value);
-    //     });
-    // };
+    const checktoken = async () => {
+        AsyncStorage.getItem('fcmtoken').then((value) => {
+            console.log('Token:' + value);
+        });
+    };
 
-    // const fetchData = async () => {
-    //     let link =await AsyncStorage.getItem('IpAddress');
-    //     setDataProcess(true)
-    //     try {
-    //         const storedUsername = await AsyncStorage.getItem('username');
-    //         const res = await RNFetchBlob.config({ trusty: true })
-    //             .fetch('POST', 'https://'+link+'/api/GetTodayLog', {
-    //                 "Content-Type": "application/json"
-    //             }, JSON.stringify({ "Username": storedUsername }));
+    const fetchData = async () => {
+        let link =await AsyncStorage.getItem('IpAddress');
+        setDataProcess(true)
+        try {
+            const storedUsername = await AsyncStorage.getItem('username');
+            const res = await RNFetchBlob.config({ trusty: true })
+                .fetch('POST', 'https://'+link+'/api/GetTodayLog', {
+                    "Content-Type": "application/json"
+                }, JSON.stringify({ "Username": storedUsername }));
 
-    //         const responseData = await res.json();
-    //         const formattedMessages = responseData.map((item: any) => {
-    //             const date = new Date(item.date);
-    //             const hours = date.getHours() % 12 || 12; 
-    //             const minutes = date.getMinutes().toString().padStart(2, '0'); 
-    //             const ampm = date.getHours() >= 12 ? 'PM' : 'AM'; 
+            const responseData = await res.json();
+            const formattedMessages = responseData.map((item: any) => {
+                const date = new Date(item.date);
+                const hours = date.getHours() % 12 || 12; 
+                const minutes = date.getMinutes().toString().padStart(2, '0'); 
+                const ampm = date.getHours() >= 12 ? 'PM' : 'AM'; 
 
-    //             return {
-    //                 id: item.logID.toString(),
-    //                 userName: item.user || 'null',
-    //                 time: `${hours}:${minutes} ${ampm}`, 
-    //                 frequency: item.status || 'null',
-    //                 ticket: item.ticket || 'null',
-    //                 oldWeight: item.from || 'null',
-    //                 newWeight: item.body || 'null',
-    //             };
-    //         });
-    //         setMessages(formattedMessages);
-    //     }
-    //     catch (err) {
-    //         console.error(err);
-    //     }
-    //     setDataProcess(false)
-    // };
+                return {
+                    id: item.logID.toString(),
+                    userName: item.user || 'null',
+                    time: `${hours}:${minutes} ${ampm}`, 
+                    frequency: item.status || 'null',
+                    ticket: item.ticket || 'null',
+                    oldWeight: item.from || 'null',
+                    newWeight: item.body || 'null',
+                };
+            });
+            setMessages(formattedMessages);
+        }
+        catch (err) {
+            console.error(err);
+        }
+        setDataProcess(false)
+    };
 
-    // const renderItem = ({ item }: { item: Message }) => (
-    //     <View style={styles.List}>
-    //         <View style={styles.Left}>
-    //             <Feather name="alert-circle" color={'#000000'} size={40} />
-    //         </View>
-    //         <View style={styles.Right}>
-    //             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-    //                 <Text style={styles.UserName}>{item.userName}</Text>
-    //                 <Text style={styles.Time}>{item.time}</Text>
-    //             </View>
-    //             <Text style={styles.Message}>
-    //                 {item.userName} changed <Text style={styles.Ticket}>{item.frequency}</Text> weight from{' '}
-    //                 <Text style={styles.AlertText}>{item.oldWeight} kg</Text> to{' '}
-    //                 <Text style={styles.AlertText}>{item.newWeight} kg</Text> on Ticket{' '}
-    //                 <Text style={styles.Ticket}>{item.ticket}</Text>
-    //             </Text>
-    //         </View>
-    //     </View>
-    // );
+    const renderItem = ({ item }: { item: Message }) => (
+        <View style={styles.List}>
+            <View style={styles.Left}>
+                <Feather name="alert-circle" color={'#000000'} size={40} />
+            </View>
+            <View style={styles.Right}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Text style={styles.UserName}>{item.userName}</Text>
+                    <Text style={styles.Time}>{item.time}</Text>
+                </View>
+                <Text style={styles.Message}>
+                    {item.userName} changed <Text style={styles.Ticket}>{item.frequency}</Text> weight from{' '}
+                    <Text style={styles.AlertText}>{item.oldWeight} kg</Text> to{' '}
+                    <Text style={styles.AlertText}>{item.newWeight} kg</Text> on Ticket{' '}
+                    <Text style={styles.Ticket}>{item.ticket}</Text>
+                </Text>
+            </View>
+        </View>
+    );
 
     return (
         <MainContainer>
@@ -111,7 +111,7 @@ const Notification = ({ navigation }: any) => {
                     </View>
                 </View>
             )}
-            {/* {dataProcess == true ? (
+            {dataProcess == true ? (
                 <View style={[css.container]}>
                     <ActivityIndicator size="large" />
                 </View>
@@ -126,7 +126,7 @@ const Notification = ({ navigation }: any) => {
                         ListEmptyComponent={<Text style={{ textAlign: 'center', fontSize: 20, fontWeight: 'bold', color: '#646464', }}>No Data Available</Text>}
                     />
                 </View>
-            )} */}
+            )}
         </MainContainer>
     )
 }

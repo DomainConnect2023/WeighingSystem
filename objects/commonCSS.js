@@ -1,4 +1,15 @@
 import { StyleSheet, Dimensions } from "react-native";
+import { DefaultTheme } from 'react-native-paper';
+
+const whiteTheme = {
+    ...DefaultTheme,
+    colors: {
+        ...DefaultTheme.colors,
+        background: 'white',
+    },
+};
+
+export default whiteTheme;
 
 export const styles = StyleSheet.create({
     fonth1: {
