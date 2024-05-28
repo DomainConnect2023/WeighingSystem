@@ -84,7 +84,7 @@ const Login = () => {
                 "login": "1",
                 "username": username,
                 "password": password,
-                "tokenValue": "sss"
+                "tokenValue": await AsyncStorage.getItem("fcmtoken")
             })).then(async (res) => {
                 Snackbar.show({
                     text: res.json().status,
