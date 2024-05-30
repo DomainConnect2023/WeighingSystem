@@ -22,10 +22,13 @@ export interface ApiResponse {
 const Login = () => {
     const navigation = useNavigation();
     const [ishide, setishide] = useState(false);
+    const [companyname, setcompanyname] = useState("");
     const [username, setusername] = useState("");
     const [password, setpassword] = useState("");
+    const nameInputRef = useRef<any>(null);
     const passwordInputRef = useRef<any>(null);
     const [loading, setLoading] = React.useState(false);
+    const [companynameHelperText, setcompanynameHelperText] = useState(false);
     const [usernameHelperText, setusernameHelperText] = useState(false);
     const [passwordHelperText, setpasswordHelperText] = useState(false);
 
@@ -44,6 +47,13 @@ const Login = () => {
 
     const checkEmpty = () => {
         let emtpy = false;
+        if (companyname === '') {
+            setcompanynameHelperText(true)
+            emtpy = true;
+        } else {
+            setcompanynameHelperText(false)
+        }
+
         if (username === '') {
             setusernameHelperText(true)
             emtpy = true;
@@ -111,6 +121,7 @@ const Login = () => {
         RNFetchBlob.config({ trusty: true }).fetch("POST","https://"+IPaddress+"/api/Login", 
         { "Content-Type": "application/json" },
             JSON.stringify({
+                "company": companyname,
                 "Username": username,
                 "Password": password,
                 "Token": await AsyncStorage.getItem("fcmtoken")
@@ -141,61 +152,75 @@ const Login = () => {
     return (
         <MainContainer>
             <StatusBar animated backgroundColor={'white'} barStyle={'dark-content'}/>
-                <KeyboardAvoidWrapper>
-                {/* Header */}
-                <View style={{ height: Dimensions.get("screen").height / 100 * 90 }}>
-                    <View style={{ flex: 0.3, flexDirection: "row" }}>
-                        <Image source={require('../assets/logo.png')} style={{ flex: 2, height: Dimensions.get("screen").height / 100 * 15, width: 120, resizeMode: 'contain', alignSelf: "center" }} />
-                        <Text style={styles.Header}>WEIGHING</Text>
-                    </View>
-
-                    {/*End Header */}
-                    <View style={{ flex: 1 }}>
-                        <View style={{ justifyContent: "flex-end", width: "90%", alignSelf: "center", marginTop: 30 }}>
-                            <Text style={styles.fontLogin}>Login</Text>
-                            <Text style={styles.fontsmall}>Enter Your Credential to Log In</Text>
-                        </View>
-                        {/* Login Information */}
-                        <View style={styles.InputRange}>
-                            <TextInput
-                                style={styles.Textinput}
-                                mode="outlined"
-                                label={'UserName'}
-                                value={username}
-                                onChangeText={setusername}
-                                returnKeyType="next"
-                                onSubmitEditing={() => passwordInputRef.current?.focus()}
-                            />
-                            {usernameHelperText && <HelperText type="error">User Name can't be empty</HelperText>}
-                        </View>
-                        <View style={styles.InputRange}>
-                            <TextInput
-                                ref={passwordInputRef}
-                                style={styles.Textinput}
-                                secureTextEntry={ishide}
-                                mode="outlined"
-                                label={'Password'}
-                                value={password}
-                                onChangeText={setpassword}
-                            />
-                            {passwordHelperText && <HelperText type="error">Password can't be empty</HelperText>}
-                        </View>
-                        <TouchableOpacity style={styles.ButtonLogin} onPress={() => { checkEmpty() }}>
-                            <Text style={styles.fonth2}>
-                                Log In
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
-
-                    <View style={{ justifyContent: "flex-end" }}>
-                        <View style={styles.blackline} />
-                        <TouchableOpacity>
-                            <Text style={styles.fonth2}>Don't have an account? Sign Up</Text>
-                        </TouchableOpacity>
-                    </View>
+            <KeyboardAvoidWrapper>
+            {/* Header */}
+            <View style={{ height: Dimensions.get("screen").height / 100 * 90 }}>
+                <View style={{ flex: 0.3, flexDirection: "row" }}>
+                    <Image source={require('../assets/logo.png')} style={{ flex: 2, height: Dimensions.get("screen").height / 100 * 15, width: 120, resizeMode: 'contain', alignSelf: "center" }} />
+                    <Text style={styles.Header}>WEIGHING</Text>
                 </View>
-                </KeyboardAvoidWrapper>
 
+                {/*End Header */}
+                <View style={{ flex: 1 }}>
+                    <View style={{ justifyContent: "flex-end", width: "90%", alignSelf: "center", marginTop: 30 }}>
+                        <Text style={styles.fontLogin}>Login</Text>
+                        <Text style={styles.fontsmall}>Enter Your Credential to Log In</Text>
+                    </View>
+                    {/* Login Information */}
+                    <View style={styles.InputRange}>
+                        <TextInput
+                            style={styles.Textinput}
+                            mode="outlined"
+                            label={'CompanyName'}
+                            value={companyname}
+                            onChangeText={setcompanyname}
+                            returnKeyType="next"
+                            onSubmitEditing={() => nameInputRef.current?.focus()}
+                        />
+                        {companynameHelperText && <HelperText type="error">Company Name can't be empty</HelperText>}
+                    </View>
+                    <View style={styles.InputRange}>
+                        <TextInput
+                            ref={nameInputRef}
+                            style={styles.Textinput}
+                            mode="outlined"
+                            label={'UserName'}
+                            value={username}
+                            onChangeText={setusername}
+                            returnKeyType="next"
+                            onSubmitEditing={() => passwordInputRef.current?.focus()}
+                        />
+                        {usernameHelperText && <HelperText type="error">User Name can't be empty</HelperText>}
+                    </View>
+                    <View style={styles.InputRange}>
+                        <TextInput
+                            ref={passwordInputRef}
+                            style={styles.Textinput}
+                            secureTextEntry={ishide}
+                            mode="outlined"
+                            label={'Password'}
+                            value={password}
+                            onChangeText={setpassword}
+                        />
+                        {passwordHelperText && <HelperText type="error">Password can't be empty</HelperText>}
+                    </View>
+                    <TouchableOpacity style={styles.ButtonLogin} onPress={() => { checkEmpty() }}>
+                        <Text style={styles.fonth2}>
+                            Log In
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+
+                <View style={{ justifyContent: "flex-end" }}>
+                    <View style={styles.blackline} />
+                    <TouchableOpacity>
+                        {/* <Text style={styles.fonth2}>Don't have an account? Sign Up</Text> */}
+                        <Text style={styles.fonth2}>@Copyright by Domain Connect</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+            
+            </KeyboardAvoidWrapper>
         </MainContainer>
     );
 }

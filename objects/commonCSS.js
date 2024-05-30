@@ -22,7 +22,9 @@ export const styles = StyleSheet.create({
         fontWeight: "bold",
         fontSize: 16,
         alignSelf: "center",
-        color: '#000000'
+        color: '#000000',
+        letterSpacing: 0.25,
+        marginBottom: 5,
     },
     fonth3: {
         alignSelf: "center",
