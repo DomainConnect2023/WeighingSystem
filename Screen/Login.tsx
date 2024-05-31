@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, Dimensions, Image, KeyboardAvoidingView, StatusBar, NativeModules } from 'react-native';
 import MainContainer from '../components/MainContainer';
-import { styles } from '../objects/commonCSS';
+import { css, styles } from '../objects/commonCSS';
 import { TextInput, HelperText } from 'react-native-paper';
 import RNFetchBlob from "rn-fetch-blob";
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -12,6 +12,7 @@ import Snackbar from 'react-native-snackbar';
 import KeyboardAvoidWrapper from '../components/KeyboardAvoidWrapper';
 import { GetFCMToken } from '../components/pushNotification';
 import Icon from 'react-native-vector-icons/Feather';
+import LoadingAnimation from '../components/LoadingAnimation';
 
 export interface ApiResponse {
     ipAddress: string;
@@ -116,10 +117,10 @@ const Login = () => {
     };
 
     const LoginApi = async () => {
-        setLoading(true)
-        // RNFetchBlob.config({ trusty: true }).fetch("POST","https://192.168.1.124:3983/api/Login", 
-        RNFetchBlob.config({ trusty: true }).fetch("POST","https://"+IPaddress+"/api/Login", 
-        { "Content-Type": "application/json" },
+        setLoading(true);
+        try {
+            RNFetchBlob.config({ trusty: true }).fetch("POST","https://"+IPaddress+"/api/Login", 
+            { "Content-Type": "application/json" },
             JSON.stringify({
                 "company": companyname,
                 "Username": username,
@@ -139,87 +140,97 @@ const Login = () => {
                     })
                     console.log("Error")
                 }
-                setLoading(false)
+                setLoading(false);
             }).catch(err => {
                 Snackbar.show({
                     text: err.message,
                     duration: Snackbar.LENGTH_LONG
-                })
-                setLoading(false)
+                });
+                setLoading(false);
             })
+        }catch(e){
+            console.log(e);
+            setLoading(false);
+        }
     }
 
     return (
         <MainContainer>
             <StatusBar animated backgroundColor={'white'} barStyle={'dark-content'}/>
             <KeyboardAvoidWrapper>
-            {/* Header */}
-            <View style={{ height: Dimensions.get("screen").height / 100 * 90 }}>
-                <View style={{ flex: 0.3, flexDirection: "row" }}>
-                    <Image source={require('../assets/logo.png')} style={{ flex: 2, height: Dimensions.get("screen").height / 100 * 15, width: 120, resizeMode: 'contain', alignSelf: "center" }} />
-                    <Text style={styles.Header}>WEIGHING</Text>
+            {loading == true ? (
+                <View style={[css.container]}>
+                    <LoadingAnimation />
                 </View>
+            ) : (
+                <View style={{ height: Dimensions.get("screen").height / 100 * 90 }}>
+                    {/* Header */}
+                    <View style={{ flex: 0.3, flexDirection: "row" }}>
+                        <Image source={require('../assets/logo.png')} style={{ flex: 2, height: Dimensions.get("screen").height / 100 * 15, width: 120, resizeMode: 'contain', alignSelf: "center" }} />
+                        <Text style={styles.Header}>WEIGHING</Text>
+                    </View>
+                    {/*End Header */}
 
-                {/*End Header */}
-                <View style={{ flex: 1 }}>
-                    <View style={{ justifyContent: "flex-end", width: "90%", alignSelf: "center", marginTop: 30 }}>
-                        <Text style={styles.fontLogin}>Login</Text>
-                        <Text style={styles.fontsmall}>Enter Your Credential to Log In</Text>
+                    <View style={{ flex: 1 }}>
+                        <View style={{ justifyContent: "flex-end", width: "90%", alignSelf: "center", marginTop: 30 }}>
+                            <Text style={styles.fontLogin}>Login</Text>
+                            <Text style={styles.fontsmall}>Enter Your Credential to Log In</Text>
+                        </View>
+                        {/* Login Information */}
+                        <View style={styles.InputRange}>
+                            <TextInput
+                                style={styles.Textinput}
+                                mode="outlined"
+                                label={'CompanyName'}
+                                value={companyname}
+                                onChangeText={setcompanyname}
+                                returnKeyType="next"
+                                onSubmitEditing={() => nameInputRef.current?.focus()}
+                            />
+                            {companynameHelperText && <HelperText type="error">Company Name can't be empty</HelperText>}
+                        </View>
+                        <View style={styles.InputRange}>
+                            <TextInput
+                                ref={nameInputRef}
+                                style={styles.Textinput}
+                                mode="outlined"
+                                label={'UserName'}
+                                value={username}
+                                onChangeText={setusername}
+                                returnKeyType="next"
+                                onSubmitEditing={() => passwordInputRef.current?.focus()}
+                            />
+                            {usernameHelperText && <HelperText type="error">User Name can't be empty</HelperText>}
+                        </View>
+                        <View style={styles.InputRange}>
+                            <TextInput
+                                ref={passwordInputRef}
+                                style={styles.Textinput}
+                                secureTextEntry={ishide}
+                                mode="outlined"
+                                label={'Password'}
+                                value={password}
+                                onChangeText={setpassword}
+                            />
+                            {passwordHelperText && <HelperText type="error">Password can't be empty</HelperText>}
+                        </View>
+                        <TouchableOpacity style={styles.ButtonLogin} onPress={() => { checkEmpty() }}>
+                            <Text style={styles.fonth2}>
+                                Log In
+                            </Text>
+                        </TouchableOpacity>
                     </View>
-                    {/* Login Information */}
-                    <View style={styles.InputRange}>
-                        <TextInput
-                            style={styles.Textinput}
-                            mode="outlined"
-                            label={'CompanyName'}
-                            value={companyname}
-                            onChangeText={setcompanyname}
-                            returnKeyType="next"
-                            onSubmitEditing={() => nameInputRef.current?.focus()}
-                        />
-                        {companynameHelperText && <HelperText type="error">Company Name can't be empty</HelperText>}
-                    </View>
-                    <View style={styles.InputRange}>
-                        <TextInput
-                            ref={nameInputRef}
-                            style={styles.Textinput}
-                            mode="outlined"
-                            label={'UserName'}
-                            value={username}
-                            onChangeText={setusername}
-                            returnKeyType="next"
-                            onSubmitEditing={() => passwordInputRef.current?.focus()}
-                        />
-                        {usernameHelperText && <HelperText type="error">User Name can't be empty</HelperText>}
-                    </View>
-                    <View style={styles.InputRange}>
-                        <TextInput
-                            ref={passwordInputRef}
-                            style={styles.Textinput}
-                            secureTextEntry={ishide}
-                            mode="outlined"
-                            label={'Password'}
-                            value={password}
-                            onChangeText={setpassword}
-                        />
-                        {passwordHelperText && <HelperText type="error">Password can't be empty</HelperText>}
-                    </View>
-                    <TouchableOpacity style={styles.ButtonLogin} onPress={() => { checkEmpty() }}>
-                        <Text style={styles.fonth2}>
-                            Log In
-                        </Text>
-                    </TouchableOpacity>
-                </View>
 
-                <View style={{ justifyContent: "flex-end" }}>
-                    <View style={styles.blackline} />
-                    <TouchableOpacity>
-                        {/* <Text style={styles.fonth2}>Don't have an account? Sign Up</Text> */}
-                        <Text style={styles.fonth2}>@Copyright by Domain Connect</Text>
-                    </TouchableOpacity>
+                    <View style={{ justifyContent: "flex-end" }}>
+                        <View style={styles.blackline} />
+                        <TouchableOpacity>
+                            {/* <Text style={styles.fonth2}>Don't have an account? Sign Up</Text> */}
+                            <Text style={styles.fonth2}>@Copyright by Domain Connect</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
-            </View>
-            
+            )}
+
             </KeyboardAvoidWrapper>
         </MainContainer>
     );

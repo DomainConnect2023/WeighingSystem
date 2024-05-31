@@ -8,6 +8,7 @@ import Login from "./Login";
 import FontAwesome from 'react-native-vector-icons/FontAwesome5';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import RNFetchBlob from "rn-fetch-blob";
+import LoadingAnimation from "../components/LoadingAnimation";
 
 const Notification = ({ navigation }: any) => {
     const [dataProcess, setDataProcess] = useState(false);
@@ -66,7 +67,7 @@ const Notification = ({ navigation }: any) => {
         catch (err) {
             console.error(err);
         }
-        setDataProcess(false)
+        setDataProcess(false);
     };
 
     const renderItem = ({ item }: { item: Message }) => (
@@ -113,7 +114,7 @@ const Notification = ({ navigation }: any) => {
             )}
             {dataProcess == true ? (
                 <View style={[css.container]}>
-                    <ActivityIndicator size="large" />
+                    <LoadingAnimation />
                 </View>
             ) : (
                 <View style={styles.Notification}>
