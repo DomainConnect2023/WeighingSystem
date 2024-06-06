@@ -40,6 +40,7 @@ const Login = () => {
     useEffect(() => {
         // console.log();
         const unsubscribe = navigation.addListener('focus', () => {
+            setcompanyname('');
             setusername('');
             setpassword('');
         });
